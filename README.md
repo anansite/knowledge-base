@@ -59,9 +59,10 @@
 ```
 knowledge-base/
 ├── index.html              # 主页面
+├── .github/workflows/      # GitHub Actions
+│   └── update-file-list.yml   # 自动更新文件列表
 ├── project-files/          # 项目文件
 │   ├── generate-file-list.js  # 文件列表生成工具
-│   ├── .github/workflows/update-file-list.yml
 │   └── file-list.json
 ├── knowledgebase/          # 知识库文档
 │   └── mysql/MySQL锁机制详解.md
