@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  # 在update-file-list工作流完成后触发
+  workflow_run:
+    workflows: ["Update File List"]
+    types:
+      - completed
+    branches: [main]
+  
+  # 允许手动触发
+  workflow_dispatch:
+
+# 设置GitHub Pages部署所需的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 确保只有一个部署任务同时运行
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # 构建任务
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # 获取最新的代码（包括update-file-list的更改）
+          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 直接上传整个项目目录作为静态站点
+          path: './'
+
+  # 部署任务
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
