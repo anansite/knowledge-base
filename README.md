@@ -1,231 +1,128 @@
-# 知识库 - Markdown文件树展示
+# 知识库 - Markdown文件展示系统
 
-一个基于GitHub Pages的Markdown文件树展示系统，可以自动扫描项目中的Markdown文件并提供在线浏览功能。
+一个基于GitHub Pages的静态Markdown文件展示系统，专注于优雅地展示你的Markdown文档。
 
 ## ✨ 功能特性
 
-- 📁 **自动文件扫描**：自动发现项目中的所有Markdown文件
-- 🔍 **实时搜索**：支持文件名和路径的模糊搜索
-- 📖 **在线预览**：直接在浏览器中查看Markdown内容
-- 📱 **响应式设计**：支持桌面和移动设备
-- 🎨 **美观界面**：采用GitHub风格的现代化设计
-- ⚡ **快速加载**：优化的文件加载和渲染性能
+- 📁 **文件树展示**：自动扫描并展示所有Markdown文件
+- 🔍 **搜索功能**：快速搜索文档
+- 📖 **Markdown渲染**：完整的Markdown语法支持
+- 🎨 **美观界面**：现代化的UI设计
+- 📱 **响应式设计**：支持移动端访问
+- 🔄 **自动更新**：GitHub Actions自动更新文件列表
+- 📥 **下载分享**：支持文档下载和分享链接
+- 🛠️ **维护工具**：工具文件统一管理
 
 ## 🚀 快速开始
 
-### 1. 克隆项目
+### 本地开发
 
-```bash
-git clone https://github.com/yourusername/knowledge-base.git
-cd knowledge-base
-```
+1. **克隆仓库**
+   ```bash
+   git clone https://github.com/yourusername/knowledge-base.git
+   cd knowledge-base
+   ```
 
-### 2. 生成文件列表
+2. **安装依赖**
+   ```bash
+   npm install
+   ```
 
-```bash
-# 使用Node.js生成文件列表
-node scripts/generate-file-list.js
+3. **启动本地服务器**
+   ```bash
+   npm run dev
+   ```
+   然后在浏览器中访问 `http://localhost:8000`
 
-# 或者使用npm脚本
-npm run build
-```
+### 部署到GitHub Pages
 
-### 3. 本地预览
+1. **推送代码到GitHub**
+   ```bash
+   git add .
+   git commit -m "Initial commit"
+   git push origin main
+   ```
 
-```bash
-# 启动本地服务器
-python -m http.server 8000
+2. **启用GitHub Pages**
+   - 进入仓库设置 → Pages
+   - Source选择 "Deploy from a branch"
+   - Branch选择 `main` 或 `master`
+   - 保存设置
 
-# 或者使用npm脚本
-npm run dev
-```
-
-然后在浏览器中访问 `http://localhost:8000`
+3. **自动更新**
+   - 当你添加、修改或删除Markdown文件时
+   - GitHub Actions会自动更新文件列表
+   - 无需手动操作
 
 ## 📁 项目结构
 
 ```
 knowledge-base/
 ├── index.html              # 主页面
-├── _config.yml            # Jekyll配置
-├── package.json           # 项目配置
-├── README.md              # 项目说明
-├── scripts/
-│   └── generate-file-list.js  # 文件扫描脚本
-├── js/
-│   └── file-list.js       # 自动生成的文件列表
-├── mysql/
-│   └── MySQL锁机制详解.md  # 示例Markdown文件
-└── file-list.json         # 文件列表JSON
+├── project-files/          # 项目文件
+│   ├── generate-file-list.js  # 文件列表生成工具
+│   ├── .github/workflows/update-file-list.yml
+│   └── file-list.json
+├── knowledgebase/          # 知识库文档
+│   └── mysql/MySQL锁机制详解.md
+└── package.json
 ```
 
-## 🔧 配置说明
+## 🔧 脚本说明
 
-### 文件扫描配置
+### 开发脚本
 
-在 `scripts/generate-file-list.js` 中可以配置：
+- `npm run dev` - 启动本地服务器
+- `npm run build` - 生成文件列表
+- `npm run preview` - 打开预览页面
 
-- **扫描目录**：默认扫描项目根目录
-- **文件过滤**：只扫描 `.md` 文件
-- **目录排除**：自动排除 `.git`、`node_modules` 等目录
+### 工具说明
 
-### 自定义样式
+项目包含一个自动化的文件列表生成工具：
 
-可以在 `index.html` 的 `<style>` 标签中修改CSS样式：
+- **扫描范围**：`knowledgebase/` 目录中的所有 `.md` 文件
+- **生成文件**：`project-files/file-list.json`
+- **前端加载**：`index.html` 自动加载JSON文件列表
+- **自动排除**：隐藏文件和系统目录
+- **元信息**：包含文件大小、修改时间等信息
 
-```css
-/* 修改主题颜色 */
-.tree-item.active {
-    background-color: #your-color;
-}
+### GitHub Actions
 
-/* 修改字体 */
-body {
-    font-family: 'Your Font', sans-serif;
-}
-```
+- **自动触发**：推送包含markdown文件的提交时
+- **自动提交**：生成的文件列表会自动提交到仓库
 
-## 📝 添加新文件
+## 📝 添加新文档
 
-1. 在项目中添加新的Markdown文件
-2. 运行文件扫描脚本：
-   ```bash
-   npm run build
-   ```
-3. 提交更改到Git：
+1. 添加新的 `.md` 文件到项目中
+2. 提交并推送到GitHub：
    ```bash
    git add .
-   git commit -m "Add new markdown file"
-   git push
+   git commit -m "Add new document"
+   git push origin main
    ```
+3. GitHub Actions会自动更新文件列表
 
-## 🌐 部署到GitHub Pages
+## 🎨 自定义样式
 
-### 方法1：使用GitHub Actions（推荐）
+- 修改 `index.html` 中的CSS来自定义界面
+- 支持主题色、字体、布局等自定义
 
-创建 `.github/workflows/deploy.yml`：
+## 🔗 锚点跳转
 
-```yaml
-name: Deploy to GitHub Pages
+文档中的目录链接支持锚点跳转：
+- 点击目录中的链接会自动跳转到对应章节
+- 支持平滑滚动和高亮效果
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+## 📊 文件统计
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-    
-    - name: Generate file list
-      run: node scripts/generate-file-list.js
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: .
-```
+- 自动统计文档数量
+- 显示文件大小和修改时间
+- 支持文件类型识别
 
-### 方法2：手动部署
+## 🤝 贡献
 
-1. 在GitHub仓库设置中启用GitHub Pages
-2. 选择部署分支（通常是 `main` 或 `gh-pages`）
-3. 确保 `index.html` 在根目录
+欢迎提交Issue和Pull Request！
 
-## 🛠️ 开发指南
+## �� 许可证
 
-### 添加新功能
-
-1. **修改主页**：编辑 `index.html`
-2. **更新样式**：修改CSS样式
-3. **添加脚本**：在 `<script>` 标签中添加JavaScript代码
-
-### 自定义文件扫描
-
-修改 `scripts/generate-file-list.js`：
-
-```javascript
-// 添加自定义文件过滤规则
-function customFilter(file) {
-    return file.name.includes('custom-pattern');
-}
-
-// 修改扫描逻辑
-const files = scanMarkdownFiles(projectRoot).filter(customFilter);
-```
-
-## 📊 性能优化
-
-### 文件大小优化
-
-- 压缩Markdown文件
-- 使用CDN加载外部资源
-- 启用Gzip压缩
-
-### 加载速度优化
-
-- 使用懒加载
-- 实现文件缓存
-- 优化图片资源
-
-## 🔍 故障排除
-
-### 常见问题
-
-1. **文件列表不更新**
-   - 确保运行了 `npm run build`
-   - 检查文件权限
-
-2. **文件无法加载**
-   - 检查文件路径是否正确
-   - 确保文件编码为UTF-8
-
-3. **样式显示异常**
-   - 清除浏览器缓存
-   - 检查CSS语法
-
-### 调试模式
-
-在浏览器控制台中查看详细日志：
-
-```javascript
-// 启用调试模式
-localStorage.setItem('debug', 'true');
-```
-
-## 🤝 贡献指南
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开 Pull Request
-
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 🙏 致谢
-
-- [Marked.js](https://marked.js.org/) - Markdown解析器
-- [GitHub Primer](https://primer.style/) - 设计系统
-- [Font Awesome](https://fontawesome.com/) - 图标库
-
-## 📞 联系方式
-
-- 项目主页：https://github.com/yourusername/knowledge-base
-- 问题反馈：https://github.com/yourusername/knowledge-base/issues
-- 邮箱：your.email@example.com
-
----
-
-⭐ 如果这个项目对你有帮助，请给它一个星标！ 
+MIT License 

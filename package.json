@@ -4,9 +4,8 @@
   "description": "知识库 - Markdown文件树展示",
   "main": "index.html",
   "scripts": {
-    "build": "node scripts/generate-file-list.js",
+    "build": "node project-files/generate-file-list.js",
     "dev": "python -m http.server 8000",
-    "serve": "python -m http.server 8000",
     "preview": "open http://localhost:8000"
   },
   "keywords": [
