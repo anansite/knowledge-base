@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>知识库 - Markdown文件树</title>
+    <title>知识库 - 技术文档中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,7 +14,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f6f8fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #24292e;
             line-height: 1.6;
             height: 100vh;
@@ -24,37 +25,44 @@
             display: flex;
             height: 100vh;
             width: 100vw;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
         }
 
         .sidebar {
-            width: 350px;
+            width: 380px;
             background: #fff;
             border-right: 1px solid #e1e4e8;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
 
         .sidebar-header {
-            padding: 20px;
+            padding: 25px 20px;
             border-bottom: 1px solid #e1e4e8;
-            background: #fafbfc;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
         }
 
         .sidebar-header h1 {
-            font-size: 18px;
-            color: #24292e;
-            margin-bottom: 5px;
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .sidebar-header p {
-            font-size: 12px;
-            color: #586069;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 0.9;
         }
 
         .search-container {
-            padding: 15px 20px;
+            padding: 20px;
             border-bottom: 1px solid #e1e4e8;
+            background: #fafbfc;
         }
 
         .search-box {
@@ -63,34 +71,36 @@
 
         .search-box input {
             width: 100%;
-            padding: 8px 12px 8px 35px;
-            border: 1px solid #d1d5da;
-            border-radius: 6px;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e1e4e8;
+            border-radius: 8px;
             font-size: 14px;
             background: #fff;
+            transition: all 0.3s ease;
         }
 
         .search-box input:focus {
             outline: none;
-            border-color: #0366d6;
-            box-shadow: 0 0 0 3px rgba(3,102,214,0.3);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .search-icon {
             position: absolute;
-            left: 12px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #586069;
-            font-size: 14px;
+            color: #667eea;
+            font-size: 16px;
         }
 
         .stats {
-            padding: 10px 20px;
+            padding: 15px 20px;
             font-size: 12px;
             color: #586069;
             background: #f6f8fa;
             border-bottom: 1px solid #e1e4e8;
+            font-weight: 500;
         }
 
         .file-tree {
@@ -100,27 +110,31 @@
         }
 
         .tree-item {
-            padding: 12px 20px;
+            padding: 15px 20px;
             cursor: pointer;
             border-bottom: 1px solid #f1f3f4;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .tree-item:hover {
-            background-color: #f6f8fa;
+            background-color: #f8f9fa;
+            transform: translateX(5px);
         }
 
         .tree-item.active {
-            background-color: #0366d6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .tree-item .icon {
-            font-size: 16px;
+            font-size: 18px;
             flex-shrink: 0;
+            width: 24px;
+            text-align: center;
         }
 
         .tree-item .content {
@@ -146,7 +160,7 @@
         }
 
         .tree-item.active .path {
-            color: #c8e1ff;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .tree-item .meta {
@@ -156,7 +170,7 @@
         }
 
         .tree-item.active .meta {
-            color: #c8e1ff;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .main-content {
@@ -167,15 +181,15 @@
         }
 
         .viewer-header {
-            padding: 20px 30px;
+            padding: 25px 30px;
             border-bottom: 1px solid #e1e4e8;
-            background: #fafbfc;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
 
         .viewer-header h2 {
             color: #24292e;
-            font-size: 20px;
-            margin-bottom: 8px;
+            font-size: 24px;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
@@ -183,7 +197,11 @@
             color: #586069;
             font-size: 13px;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            background: #f1f3f4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .viewer-header .file-meta {
@@ -213,58 +231,68 @@
             margin-bottom: 16px;
             font-weight: 600;
             line-height: 1.25;
+            color: #24292e;
         }
 
         .markdown-content h1 {
-            font-size: 2em;
-            border-bottom: 1px solid #eaecef;
+            font-size: 2.2em;
+            border-bottom: 2px solid #e1e4e8;
             padding-bottom: 0.3em;
+            color: #24292e;
         }
 
         .markdown-content h2 {
-            font-size: 1.5em;
+            font-size: 1.6em;
             border-bottom: 1px solid #eaecef;
             padding-bottom: 0.3em;
+            color: #24292e;
         }
 
         .markdown-content h3 {
-            font-size: 1.25em;
+            font-size: 1.3em;
+            color: #24292e;
         }
 
         .markdown-content p {
             margin-bottom: 16px;
+            color: #24292e;
         }
 
         .markdown-content code {
             background-color: rgba(27,31,35,0.05);
-            border-radius: 3px;
+            border-radius: 4px;
             font-size: 85%;
             margin: 0;
             padding: 0.2em 0.4em;
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            color: #e36209;
         }
 
         .markdown-content pre {
             background-color: #f6f8fa;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 85%;
             line-height: 1.45;
             overflow: auto;
-            padding: 16px;
+            padding: 20px;
             margin-bottom: 16px;
             border: 1px solid #e1e4e8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .markdown-content pre code {
             background-color: transparent;
             padding: 0;
+            color: #24292e;
         }
 
         .markdown-content blockquote {
-            border-left: 4px solid #dfe2e5;
+            border-left: 4px solid #667eea;
             color: #6a737d;
             margin: 0 0 16px 0;
             padding: 0 1em;
+            background: #f8f9fa;
+            border-radius: 0 4px 4px 0;
         }
 
         .markdown-content table {
@@ -272,16 +300,20 @@
             border-spacing: 0;
             margin-bottom: 16px;
             width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .markdown-content table th,
         .markdown-content table td {
             border: 1px solid #dfe2e5;
-            padding: 8px 12px;
+            padding: 12px 16px;
         }
 
         .markdown-content table th {
-            background-color: #f6f8fa;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
             font-weight: 600;
         }
 
@@ -297,25 +329,43 @@
 
         .loading {
             text-align: center;
-            padding: 60px;
+            padding: 80px;
             color: #586069;
+        }
+
+        .loading i {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 15px;
         }
 
         .error {
             text-align: center;
-            padding: 60px;
+            padding: 80px;
             color: #cb2431;
+        }
+
+        .error i {
+            font-size: 48px;
+            color: #cb2431;
+            margin-bottom: 20px;
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px;
+            padding: 80px;
             color: #586069;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 20px;
         }
 
         .no-results {
             text-align: center;
-            padding: 40px;
+            padding: 60px;
             color: #8b949e;
             font-style: italic;
         }
@@ -330,12 +380,18 @@
         }
 
         .folder-header {
-            padding: 10px 20px;
+            padding: 12px 20px;
             background: #f6f8fa;
             font-weight: 500;
             color: #24292e;
             font-size: 13px;
             border-bottom: 1px solid #e1e4e8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .folder-header:hover {
+            background: #e1e4e8;
         }
 
         .folder-content {
@@ -349,19 +405,43 @@
         .folder-toggle {
             cursor: pointer;
             user-select: none;
-        }
-
-        .folder-toggle:hover {
-            background-color: #e1e4e8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .folder-icon {
-            margin-right: 8px;
-            transition: transform 0.2s;
+            transition: transform 0.3s ease;
+            color: #667eea;
         }
 
         .folder-icon.expanded {
             transform: rotate(90deg);
+        }
+
+        .blog-theme {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .theme-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
 
         @media (max-width: 768px) {
@@ -376,6 +456,11 @@
             
             .main-content {
                 height: 60vh;
+            }
+
+            .blog-theme {
+                top: 10px;
+                right: 10px;
             }
         }
 
@@ -396,25 +481,35 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #a8b3b9;
         }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .markdown-content {
+            animation: fadeIn 0.5s ease-out;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h1>📚 知识库</h1>
-                <p>浏览项目中的所有Markdown文档</p>
+                <h1><i class="fas fa-book-open"></i> 知识库</h1>
+                <p>技术文档中心 - 探索知识的海洋</p>
             </div>
             
             <div class="search-container">
                 <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" placeholder="搜索文件..." />
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="搜索文档..." />
                 </div>
             </div>
             
             <div class="stats" id="stats">
-                正在加载文件列表...
+                <i class="fas fa-info-circle"></i> 正在加载文件列表...
             </div>
             
             <div class="file-tree" id="fileTree"></div>
@@ -422,16 +517,24 @@
         
         <div class="main-content">
             <div class="viewer-header">
-                <h2 id="currentFileName">选择文件查看内容</h2>
+                <h2 id="currentFileName"><i class="fas fa-file-alt"></i> 选择文件查看内容</h2>
                 <div class="file-path" id="currentFilePath"></div>
                 <div class="file-meta" id="currentFileMeta"></div>
             </div>
             <div class="viewer-content">
                 <div id="markdownContent" class="empty-state">
-                    请从左侧选择一个Markdown文件进行查看
+                    <i class="fas fa-hand-pointer"></i>
+                    <h3>欢迎来到知识库</h3>
+                    <p>请从左侧选择一个文档开始阅读</p>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="blog-theme">
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-palette"></i> 主题切换
+        </button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -484,6 +587,13 @@
                             type: 'file',
                             size: 0,
                             modified: new Date().toISOString()
+                        },
+                        {
+                            name: 'README.md',
+                            path: 'README.md',
+                            type: 'file',
+                            size: 0,
+                            modified: new Date().toISOString()
                         }
                     ];
                 }
@@ -519,7 +629,7 @@
                 const totalSize = this.files.reduce((sum, file) => sum + (file.size || 0), 0);
                 const sizeKB = Math.round(totalSize / 1024);
                 
-                statsDiv.innerHTML = `📊 共 ${totalFiles} 个文件 (${sizeKB} KB)`;
+                statsDiv.innerHTML = `<i class="fas fa-chart-bar"></i> 共 ${totalFiles} 个文档 (${sizeKB} KB)`;
             }
 
             renderFileTree() {
@@ -527,7 +637,7 @@
                 fileTree.innerHTML = '';
 
                 if (this.files.length === 0) {
-                    fileTree.innerHTML = '<div class="no-results">没有找到Markdown文件</div>';
+                    fileTree.innerHTML = '<div class="no-results"><i class="fas fa-folder-open"></i><br>没有找到Markdown文件</div>';
                     return;
                 }
 
@@ -556,8 +666,11 @@
                 const size = file.size ? this.formatFileSize(file.size) : '';
                 const modified = file.modified ? this.formatDate(file.modified) : '';
                 
+                // 根据文件类型选择图标
+                const icon = this.getFileIcon(file.name);
+                
                 item.innerHTML = `
-                    <span class="icon">📄</span>
+                    <span class="icon">${icon}</span>
                     <div class="content">
                         <div class="name">${file.name}</div>
                         <div class="meta">${size}${modified ? ' • ' + modified : ''}</div>
@@ -567,6 +680,29 @@
                 container.appendChild(item);
             }
 
+            getFileIcon(fileName) {
+                const ext = fileName.toLowerCase().split('.').pop();
+                switch (ext) {
+                    case 'md':
+                        return '<i class="fas fa-file-alt"></i>';
+                    case 'txt':
+                        return '<i class="fas fa-file-text"></i>';
+                    case 'pdf':
+                        return '<i class="fas fa-file-pdf"></i>';
+                    case 'doc':
+                    case 'docx':
+                        return '<i class="fas fa-file-word"></i>';
+                    case 'xls':
+                    case 'xlsx':
+                        return '<i class="fas fa-file-excel"></i>';
+                    case 'ppt':
+                    case 'pptx':
+                        return '<i class="fas fa-file-powerpoint"></i>';
+                    default:
+                        return '<i class="fas fa-file"></i>';
+                }
+            }
+
             renderFolderItem(folderName, folderData, container, currentPath) {
                 const folderDiv = document.createElement('div');
                 folderDiv.className = 'folder-item';
@@ -574,8 +710,11 @@
                 const folderHeader = document.createElement('div');
                 folderHeader.className = 'folder-header folder-toggle';
                 folderHeader.innerHTML = `
-                    <span class="folder-icon">▶</span>
-                    <span>📁 ${folderName}</span>
+                    <div class="folder-toggle">
+                        <i class="fas fa-chevron-right folder-icon"></i>
+                        <i class="fas fa-folder"></i>
+                        <span>${folderName}</span>
+                    </div>
                 `;
                 
                 const folderContent = document.createElement('div');
@@ -662,7 +801,12 @@
                 const filePathDiv = document.getElementById('currentFilePath');
                 const fileMetaDiv = document.getElementById('currentFileMeta');
 
-                contentDiv.innerHTML = '<div class="loading">正在加载文件...</div>';
+                contentDiv.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <h3>正在加载文档...</h3>
+                    </div>
+                `;
                 
                 try {
                     const response = await fetch(filePath);
@@ -674,7 +818,7 @@
                     const htmlContent = marked.parse(content);
                     
                     contentDiv.innerHTML = `<div class="markdown-content">${htmlContent}</div>`;
-                    fileNameDiv.textContent = this.getFileName(filePath);
+                    fileNameDiv.innerHTML = `<i class="fas fa-file-alt"></i> ${this.getFileName(filePath)}`;
                     filePathDiv.textContent = filePath;
                     
                     // 显示文件元信息
@@ -682,7 +826,7 @@
                     if (file) {
                         const size = file.size ? this.formatFileSize(file.size) : '';
                         const modified = file.modified ? this.formatDate(file.modified) : '';
-                        fileMetaDiv.textContent = `${size}${modified ? ' • 修改于 ' + modified : ''}`;
+                        fileMetaDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${size}${modified ? ' • 修改于 ' + modified : ''}`;
                     }
                     
                     this.currentFile = filePath;
@@ -690,9 +834,11 @@
                     console.error('加载文件失败:', error);
                     contentDiv.innerHTML = `
                         <div class="error">
+                            <i class="fas fa-exclamation-triangle"></i>
                             <h3>加载失败</h3>
                             <p>无法加载文件: ${filePath}</p>
                             <p>错误信息: ${error.message}</p>
+                            <p>请检查文件是否存在或网络连接是否正常</p>
                         </div>
                     `;
                 }
@@ -735,7 +881,7 @@
                 // 更新统计信息
                 const statsDiv = document.getElementById('stats');
                 if (searchTerm) {
-                    statsDiv.innerHTML = `📊 显示 ${visibleCount} / ${this.files.length} 个文件`;
+                    statsDiv.innerHTML = `<i class="fas fa-search"></i> 显示 ${visibleCount} / ${this.files.length} 个文档`;
                 } else {
                     // 恢复所有文件夹显示
                     folders.forEach(folder => {
@@ -749,9 +895,29 @@
             }
         }
 
+        // 主题切换功能
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
         // 初始化应用
         document.addEventListener('DOMContentLoaded', () => {
             new MarkdownViewer();
+            
+            // 恢复主题设置
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+            }
         });
     </script>
 </body>
