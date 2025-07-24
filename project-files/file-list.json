@@ -1,27 +1,13 @@
 {
-  "generated": "2025-07-24T07:44:59.561Z",
-  "totalFiles": 3,
+  "generated": "2025-07-24T07:50:15.257Z",
+  "totalFiles": 1,
   "files": [
-    {
-      "name": "MySQL锁机制详解 copy.md",
-      "path": "mysql/MySQL锁机制详解 copy.md",
-      "type": "file",
-      "size": 24134,
-      "modified": "2025-07-24T07:44:57.568Z"
-    },
     {
       "name": "MySQL锁机制详解.md",
       "path": "mysql/MySQL锁机制详解.md",
       "type": "file",
       "size": 24134,
-      "modified": "2025-07-24T07:44:57.568Z"
-    },
-    {
-      "name": "1.md",
-      "path": "test/1.md",
-      "type": "file",
-      "size": 2,
-      "modified": "2025-07-24T07:44:57.568Z"
+      "modified": "2025-07-24T07:50:14.733Z"
     }
   ]
 }
