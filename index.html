@@ -1,11 +1,758 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>知识库 - Markdown文件树</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f6f8fa;
+            color: #24292e;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: #fff;
+            border-right: 1px solid #e1e4e8;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #e1e4e8;
+            background: #fafbfc;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            color: #24292e;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: #586069;
+        }
+
+        .search-container {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #0366d6;
+            box-shadow: 0 0 0 3px rgba(3,102,214,0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #586069;
+            font-size: 14px;
+        }
+
+        .stats {
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #586069;
+            background: #f6f8fa;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .file-tree {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .tree-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tree-item:hover {
+            background-color: #f6f8fa;
+        }
+
+        .tree-item.active {
+            background-color: #0366d6;
+            color: #fff;
+        }
+
+        .tree-item .icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .tree-item .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tree-item .name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tree-item .path {
+            font-size: 12px;
+            color: #586069;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tree-item.active .path {
+            color: #c8e1ff;
+        }
+
+        .tree-item .meta {
+            font-size: 11px;
+            color: #8b949e;
+            margin-top: 2px;
+        }
+
+        .tree-item.active .meta {
+            color: #c8e1ff;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .viewer-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e1e4e8;
+            background: #fafbfc;
+        }
+
+        .viewer-header h2 {
+            color: #24292e;
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .viewer-header .file-path {
+            color: #586069;
+            font-size: 13px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            margin-bottom: 5px;
+        }
+
+        .viewer-header .file-meta {
+            color: #8b949e;
+            font-size: 12px;
+        }
+
+        .viewer-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .markdown-content {
+            line-height: 1.6;
+            max-width: 100%;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .markdown-content h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+
+        .markdown-content h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+
+        .markdown-content h3 {
+            font-size: 1.25em;
+        }
+
+        .markdown-content p {
+            margin-bottom: 16px;
+        }
+
+        .markdown-content code {
+            background-color: rgba(27,31,35,0.05);
+            border-radius: 3px;
+            font-size: 85%;
+            margin: 0;
+            padding: 0.2em 0.4em;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        .markdown-content pre {
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            font-size: 85%;
+            line-height: 1.45;
+            overflow: auto;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #e1e4e8;
+        }
+
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid #dfe2e5;
+            color: #6a737d;
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+        }
+
+        .markdown-content table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+
+        .markdown-content table th,
+        .markdown-content table td {
+            border: 1px solid #dfe2e5;
+            padding: 8px 12px;
+        }
+
+        .markdown-content table th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+
+        .markdown-content li {
+            margin-bottom: 0.25em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #586069;
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px;
+            color: #cb2431;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #586069;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #8b949e;
+            font-style: italic;
+        }
+
+        .folder-structure {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .folder-item {
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .folder-header {
+            padding: 10px 20px;
+            background: #f6f8fa;
+            font-weight: 500;
+            color: #24292e;
+            font-size: 13px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .folder-content {
+            display: none;
+        }
+
+        .folder-content.expanded {
+            display: block;
+        }
+
+        .folder-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .folder-toggle:hover {
+            background-color: #e1e4e8;
+        }
+
+        .folder-icon {
+            margin-right: 8px;
+            transition: transform 0.2s;
+        }
+
+        .folder-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 40vh;
+            }
+            
+            .main-content {
+                height: 60vh;
+            }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f3f4;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c8cd;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8b3b9;
+        }
+    </style>
 </head>
 <body>
-    nihao
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>📚 知识库</h1>
+                <p>浏览项目中的所有Markdown文档</p>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="搜索文件..." />
+                </div>
+            </div>
+            
+            <div class="stats" id="stats">
+                正在加载文件列表...
+            </div>
+            
+            <div class="file-tree" id="fileTree"></div>
+        </div>
+        
+        <div class="main-content">
+            <div class="viewer-header">
+                <h2 id="currentFileName">选择文件查看内容</h2>
+                <div class="file-path" id="currentFilePath"></div>
+                <div class="file-meta" id="currentFileMeta"></div>
+            </div>
+            <div class="viewer-content">
+                <div id="markdownContent" class="empty-state">
+                    请从左侧选择一个Markdown文件进行查看
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        class MarkdownViewer {
+            constructor() {
+                this.files = [];
+                this.currentFile = null;
+                this.folderStructure = {};
+                this.init();
+            }
+
+            async init() {
+                await this.loadFileList();
+                this.buildFolderStructure();
+                this.renderFileTree();
+                this.bindEvents();
+            }
+
+            async loadFileList() {
+                try {
+                    // 尝试加载自动生成的文件列表
+                    const response = await fetch('js/file-list.js');
+                    if (response.ok) {
+                        const scriptContent = await response.text();
+                        // 执行脚本以获取FILE_LIST
+                        const script = document.createElement('script');
+                        script.textContent = scriptContent;
+                        document.head.appendChild(script);
+                        
+                        // 等待脚本执行
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        
+                        if (typeof FILE_LIST !== 'undefined') {
+                            this.files = FILE_LIST.files;
+                            console.log(`✅ 已加载 ${this.files.length} 个文件`);
+                        } else {
+                            throw new Error('FILE_LIST未定义');
+                        }
+                    } else {
+                        throw new Error('无法加载文件列表');
+                    }
+                } catch (error) {
+                    console.warn('自动加载文件列表失败，使用默认列表:', error.message);
+                    // 使用默认文件列表作为后备
+                    this.files = [
+                        {
+                            name: 'MySQL锁机制详解.md',
+                            path: 'mysql/MySQL锁机制详解.md',
+                            type: 'file',
+                            size: 0,
+                            modified: new Date().toISOString()
+                        }
+                    ];
+                }
+                
+                this.updateStats();
+            }
+
+            buildFolderStructure() {
+                this.folderStructure = {};
+                
+                this.files.forEach(file => {
+                    const pathParts = file.path.split('/');
+                    let currentLevel = this.folderStructure;
+                    
+                    // 构建文件夹结构
+                    for (let i = 0; i < pathParts.length - 1; i++) {
+                        const part = pathParts[i];
+                        if (!currentLevel[part]) {
+                            currentLevel[part] = { files: [], folders: {} };
+                        }
+                        currentLevel = currentLevel[part].folders;
+                    }
+                    
+                    // 添加文件到当前级别
+                    const fileName = pathParts[pathParts.length - 1];
+                    currentLevel[fileName] = file;
+                });
+            }
+
+            updateStats() {
+                const statsDiv = document.getElementById('stats');
+                const totalFiles = this.files.length;
+                const totalSize = this.files.reduce((sum, file) => sum + (file.size || 0), 0);
+                const sizeKB = Math.round(totalSize / 1024);
+                
+                statsDiv.innerHTML = `📊 共 ${totalFiles} 个文件 (${sizeKB} KB)`;
+            }
+
+            renderFileTree() {
+                const fileTree = document.getElementById('fileTree');
+                fileTree.innerHTML = '';
+
+                if (this.files.length === 0) {
+                    fileTree.innerHTML = '<div class="no-results">没有找到Markdown文件</div>';
+                    return;
+                }
+
+                this.renderFolderStructure(this.folderStructure, fileTree, '');
+            }
+
+            renderFolderStructure(structure, container, currentPath) {
+                Object.keys(structure).forEach(key => {
+                    const item = structure[key];
+                    
+                    if (item.type === 'file' || item.path) {
+                        // 这是一个文件
+                        this.renderFileItem(item, container);
+                    } else {
+                        // 这是一个文件夹
+                        this.renderFolderItem(key, item, container, currentPath);
+                    }
+                });
+            }
+
+            renderFileItem(file, container) {
+                const item = document.createElement('div');
+                item.className = 'tree-item';
+                item.dataset.path = file.path;
+                
+                const size = file.size ? this.formatFileSize(file.size) : '';
+                const modified = file.modified ? this.formatDate(file.modified) : '';
+                
+                item.innerHTML = `
+                    <span class="icon">📄</span>
+                    <div class="content">
+                        <div class="name">${file.name}</div>
+                        <div class="meta">${size}${modified ? ' • ' + modified : ''}</div>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            }
+
+            renderFolderItem(folderName, folderData, container, currentPath) {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'folder-item';
+                
+                const folderHeader = document.createElement('div');
+                folderHeader.className = 'folder-header folder-toggle';
+                folderHeader.innerHTML = `
+                    <span class="folder-icon">▶</span>
+                    <span>📁 ${folderName}</span>
+                `;
+                
+                const folderContent = document.createElement('div');
+                folderContent.className = 'folder-content';
+                
+                folderDiv.appendChild(folderHeader);
+                folderDiv.appendChild(folderContent);
+                container.appendChild(folderDiv);
+                
+                // 绑定文件夹展开/收起事件
+                folderHeader.addEventListener('click', () => {
+                    const icon = folderHeader.querySelector('.folder-icon');
+                    const content = folderContent;
+                    
+                    if (content.classList.contains('expanded')) {
+                        content.classList.remove('expanded');
+                        icon.classList.remove('expanded');
+                    } else {
+                        content.classList.add('expanded');
+                        icon.classList.add('expanded');
+                    }
+                });
+                
+                // 递归渲染子文件夹和文件
+                this.renderFolderStructure(folderData.folders, folderContent, currentPath + '/' + folderName);
+                
+                // 渲染当前文件夹中的文件
+                Object.keys(folderData).forEach(key => {
+                    if (key !== 'folders' && key !== 'files') {
+                        const file = folderData[key];
+                        if (file.type === 'file' || file.path) {
+                            this.renderFileItem(file, folderContent);
+                        }
+                    }
+                });
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+            }
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            }
+
+            bindEvents() {
+                // 文件树点击事件
+                document.getElementById('fileTree').addEventListener('click', (e) => {
+                    const item = e.target.closest('.tree-item');
+                    if (item) {
+                        this.selectFile(item.dataset.path);
+                    }
+                });
+
+                // 搜索功能
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.filterFiles(e.target.value);
+                });
+            }
+
+            selectFile(filePath) {
+                // 更新选中状态
+                document.querySelectorAll('.tree-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-path="${filePath}"]`).classList.add('active');
+
+                // 加载文件内容
+                this.loadFileContent(filePath);
+            }
+
+            async loadFileContent(filePath) {
+                const contentDiv = document.getElementById('markdownContent');
+                const fileNameDiv = document.getElementById('currentFileName');
+                const filePathDiv = document.getElementById('currentFilePath');
+                const fileMetaDiv = document.getElementById('currentFileMeta');
+
+                contentDiv.innerHTML = '<div class="loading">正在加载文件...</div>';
+                
+                try {
+                    const response = await fetch(filePath);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const content = await response.text();
+                    const htmlContent = marked.parse(content);
+                    
+                    contentDiv.innerHTML = `<div class="markdown-content">${htmlContent}</div>`;
+                    fileNameDiv.textContent = this.getFileName(filePath);
+                    filePathDiv.textContent = filePath;
+                    
+                    // 显示文件元信息
+                    const file = this.files.find(f => f.path === filePath);
+                    if (file) {
+                        const size = file.size ? this.formatFileSize(file.size) : '';
+                        const modified = file.modified ? this.formatDate(file.modified) : '';
+                        fileMetaDiv.textContent = `${size}${modified ? ' • 修改于 ' + modified : ''}`;
+                    }
+                    
+                    this.currentFile = filePath;
+                } catch (error) {
+                    console.error('加载文件失败:', error);
+                    contentDiv.innerHTML = `
+                        <div class="error">
+                            <h3>加载失败</h3>
+                            <p>无法加载文件: ${filePath}</p>
+                            <p>错误信息: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            getFileName(filePath) {
+                return filePath.split('/').pop();
+            }
+
+            filterFiles(searchTerm) {
+                const items = document.querySelectorAll('.tree-item');
+                const folders = document.querySelectorAll('.folder-item');
+                const term = searchTerm.toLowerCase();
+                let visibleCount = 0;
+                
+                // 隐藏所有文件夹
+                folders.forEach(folder => {
+                    folder.style.display = 'none';
+                });
+                
+                items.forEach(item => {
+                    const fileName = item.querySelector('.name').textContent.toLowerCase();
+                    const filePath = item.dataset.path.toLowerCase();
+                    
+                    if (fileName.includes(term) || filePath.includes(term)) {
+                        item.style.display = 'flex';
+                        visibleCount++;
+                        
+                        // 显示父文件夹
+                        let parent = item.closest('.folder-item');
+                        while (parent) {
+                            parent.style.display = 'block';
+                            parent = parent.parentElement.closest('.folder-item');
+                        }
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                // 更新统计信息
+                const statsDiv = document.getElementById('stats');
+                if (searchTerm) {
+                    statsDiv.innerHTML = `📊 显示 ${visibleCount} / ${this.files.length} 个文件`;
+                } else {
+                    // 恢复所有文件夹显示
+                    folders.forEach(folder => {
+                        folder.style.display = 'block';
+                    });
+                    items.forEach(item => {
+                        item.style.display = 'flex';
+                    });
+                    this.updateStats();
+                }
+            }
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            new MarkdownViewer();
+        });
+    </script>
 </body>
 </html>

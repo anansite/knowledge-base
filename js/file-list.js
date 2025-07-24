@@ -1,0 +1,26 @@
+// 自动生成的文件列表
+const FILE_LIST = {
+  "generated": "2025-07-24T02:59:01.189Z",
+  "totalFiles": 2,
+  "files": [
+    {
+      "name": "MySQL锁机制详解.md",
+      "path": "mysql/MySQL锁机制详解.md",
+      "type": "file",
+      "size": 24134,
+      "modified": "2025-07-24T02:18:48.181Z"
+    },
+    {
+      "name": "README.md",
+      "path": "README.md",
+      "type": "file",
+      "size": 5118,
+      "modified": "2025-07-24T02:50:31.664Z"
+    }
+  ]
+};
+
+// 导出文件列表
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = FILE_LIST;
+}
