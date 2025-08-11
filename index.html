@@ -512,30 +512,41 @@
 
         .copy-button {
             position: absolute;
-            top: 3px;
-            right: 3px;
+            top: 2px;
+            right: 2px;
             background: #f6f8fa;
             color: #586069;
             border: 1px solid #e1e4e8;
             border-radius: 1px;
-            padding: 1px 2px;
-            font-size: 6px;
+            padding: 0;
+            font-size: 5px;
             cursor: pointer;
             opacity: 0;
-            transition: opacity 0.2s ease, background-color 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 10;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             font-weight: 400;
             line-height: 1;
-            min-width: 12px;
-            min-height: 12px;
+            width: 10px;
+            height: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transform: scale(1);
+        }
+
+        .copy-button:hover {
+            background: #e1e4e8;
+            color: #24292e;
+            transform: scale(1.1);
+        }
+
+        .copy-button:active {
+            transform: scale(0.95);
         }
 
         .copy-button i {
-            font-size: 5px;
+            font-size: 4px;
             margin-right: 0;
         }
 
@@ -552,6 +563,14 @@
             background: #28a745;
             color: white;
             border-color: #28a745;
+            transform: scale(1.2);
+            animation: copySuccess 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes copySuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1.2); }
         }
 
         .markdown-content code {
@@ -827,15 +846,19 @@
         .folder-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-in-out;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(-5px);
         }
 
         .folder-content.expanded {
-            max-height: 1000px; /* 足够大的值来容纳内容 */
+            max-height: 2000px; /* 更大的值确保内容完全显示 */
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .folder-icon {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             color: #6366f1;
         }
 
