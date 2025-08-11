@@ -512,8 +512,8 @@
 
         .copy-button {
             position: absolute;
-            top: 2px;
-            right: 2px;
+            top: 4px;
+            right: 4px;
             background: #f6f8fa;
             color: #586069;
             border: 1px solid #e1e4e8;
@@ -846,20 +846,27 @@
         .folder-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             opacity: 0;
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            filter: blur(1px);
         }
 
         .folder-content.expanded {
-            max-height: 2000px; /* 更大的值确保内容完全显示 */
+            max-height: 3000px; /* 更大的值确保内容完全显示 */
             opacity: 1;
             transform: translateY(0);
+            filter: blur(0);
         }
 
         .folder-icon {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             color: #6366f1;
+        }
+
+        .folder-header:hover .folder-icon {
+            color: #4f46e5;
+            transform: scale(1.1);
         }
 
         .folder-content .tree-item {
