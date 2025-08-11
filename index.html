@@ -492,6 +492,15 @@
             line-height: 1.7;
         }
 
+        /* 确保所有代码元素都没有下划线 */
+        .markdown-content code,
+        .markdown-content pre code,
+        .markdown-content .token,
+        .markdown-content .prism-code {
+            text-decoration: none !important;
+            border-bottom: none !important;
+        }
+
         .markdown-content code {
             background: linear-gradient(135deg, #f6f8fa 0%, #e9ecef 100%);
             border: 1px solid #e1e4e8;
@@ -503,6 +512,8 @@
             color: #e36209;
             font-weight: 500;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-decoration: none !important;
+            border-bottom: none !important;
         }
 
         .markdown-content pre {
@@ -539,6 +550,8 @@
             border: none;
             margin: 0;
             font-size: 12px;
+            text-decoration: none !important;
+            border-bottom: none !important;
         }
 
         .markdown-content blockquote {
