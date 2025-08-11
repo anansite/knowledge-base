@@ -1,0 +1,7 @@
+# 简单的Jekyll配置
+markdown: kramdown
+highlighter: rouge
+
+# 关键设置：liquid错误模式设为warn，这样遇到未知标签只会警告不会报错
+liquid:
+  error_mode: warn 
