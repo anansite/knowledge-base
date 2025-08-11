@@ -1,7 +1,29 @@
-# 简单的Jekyll配置
+# Jekyll配置 - 保持代码高亮但避免Liquid错误
 markdown: kramdown
 highlighter: rouge
 
-# 关键设置：liquid错误模式设为warn，这样遇到未知标签只会警告不会报错
+# Liquid配置 - 最宽松的设置
 liquid:
-  error_mode: warn 
+  error_mode: warn
+  strict_variables: false
+  strict_filters: false
+
+# Kramdown配置 - 启用代码高亮
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+      start_line: 1
+
+# 启用必要的插件
+plugins:
+  - jekyll-highlight
+  - jekyll-relative-links
+
+# 排除不需要处理的文件
+exclude:
+  - node_modules
+  - package.json
+  - package-lock.json 
