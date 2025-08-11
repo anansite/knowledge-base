@@ -1,27 +1,39 @@
 # GitHub Pages Jekyll 配置
-# 禁用 Liquid 处理以避免解析 Markdown 中的代码块
+# 启用代码高亮但避免 Liquid 解析错误
 
-# 禁用 Liquid 处理
+# 站点标题
+title: "Knowledge Base"
+
+# 使用 Kramdown 渲染器（支持代码高亮）
+markdown: kramdown
+
+# 启用代码高亮
+highlighter: rouge
+
+# Kramdown 配置
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+      start_line: 1
+
+# 禁用 Liquid 处理以避免解析 Jinja2 语法
 liquid:
   error_mode: warn
 
-# 禁用默认的 Jekyll 处理
-markdown: kramdown
-kramdown:
-  input: GFM
-  hard_wrap: false
-  auto_ids: true
-  footnote_nr: 1
-  entity_output: as_char
-  toc_levels: 1..6
-  smart_quotes: lsquo,rsquo,ldquo,rdquo
-  enable_coderay: false
+# 启用必要的插件
+plugins:
+  - jekyll-highlight
+  - jekyll-relative-links
 
-# 禁用插件
-plugins: []
-
-# 排除文件
+# 排除不需要处理的文件
 exclude:
   - README.md
   - .gitignore
-  - .nojekyll 
+
+# 包含自定义布局
+include:
+  - _layouts
+  - assets 
