@@ -530,8 +530,8 @@
         }
 
         .copy-button i {
-            font-size: 10px;
-            margin-right: 3px;
+            font-size: 9px;
+            margin-right: 2px;
         }
 
         .code-block-wrapper:hover .copy-button {
@@ -1323,15 +1323,30 @@
                 folderDiv.appendChild(folderContent);
                 container.appendChild(folderDiv);
                 
-                // 绑定文件夹展开/收起事件
+                // 绑定文件夹展开/收起事件 - 手风琴效果
                 folderHeader.addEventListener('click', () => {
                     const icon = folderHeader.querySelector('.folder-icon');
                     const content = folderContent;
                     
                     if (content.classList.contains('expanded')) {
+                        // 如果当前文件夹已展开，则折叠它
                         content.classList.remove('expanded');
                         icon.classList.remove('expanded');
                     } else {
+                        // 先折叠所有其他文件夹
+                        const allFolders = document.querySelectorAll('.folder-item');
+                        allFolders.forEach(folder => {
+                            if (folder !== folderDiv) {
+                                const otherContent = folder.querySelector('.folder-content');
+                                const otherIcon = folder.querySelector('.folder-icon');
+                                if (otherContent && otherIcon) {
+                                    otherContent.classList.remove('expanded');
+                                    otherIcon.classList.remove('expanded');
+                                }
+                            }
+                        });
+                        
+                        // 展开当前文件夹
                         content.classList.add('expanded');
                         icon.classList.add('expanded');
                     }
@@ -1799,6 +1814,17 @@
                 // 如果有文件夹层级
                 if (pathParts.length > 1) {
                     const folderName = pathParts[0]; // 第一级文件夹
+                    
+                    // 先折叠所有文件夹
+                    const allFolders = document.querySelectorAll('.folder-item');
+                    allFolders.forEach(folder => {
+                        const content = folder.querySelector('.folder-content');
+                        const icon = folder.querySelector('.folder-icon');
+                        if (content && icon) {
+                            content.classList.remove('expanded');
+                            icon.classList.remove('expanded');
+                        }
+                    });
                     
                     // 查找对应的文件夹元素
                     const folderItems = document.querySelectorAll('.folder-item');
