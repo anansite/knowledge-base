@@ -492,13 +492,16 @@
             line-height: 1.7;
         }
 
-        /* 确保所有代码元素都没有下划线 */
+        /* 确保所有代码元素都没有下划线和阴影 */
         .markdown-content code,
         .markdown-content pre code,
         .markdown-content .token,
-        .markdown-content .prism-code {
+        .markdown-content .prism-code,
+        .markdown-content pre {
             text-decoration: none !important;
             border-bottom: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
         }
 
         .markdown-content code {
@@ -511,7 +514,7 @@
             font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Courier New', monospace;
             color: #e36209;
             font-weight: 500;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: none !important;
             text-decoration: none !important;
             border-bottom: none !important;
         }
@@ -526,7 +529,7 @@
             padding: 20px;
             margin: 24px 0;
             border: 1px solid #e1e4e8;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+            box-shadow: none !important;
             position: relative;
             white-space: pre-wrap;
             word-wrap: break-word;
