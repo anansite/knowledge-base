@@ -219,6 +219,7 @@ print(prompt.content)
 # 输出：你好，张三！你的年龄是 25 岁。
 ```
 
+
 **条件语句**：
 ```python
 template = HumanMessagePromptTemplate.from_template(
