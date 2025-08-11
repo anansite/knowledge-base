@@ -529,6 +529,11 @@
             line-height: 1.2;
         }
 
+        .copy-button i {
+            font-size: 10px;
+            margin-right: 3px;
+        }
+
         .code-block-wrapper:hover .copy-button {
             opacity: 1;
         }
@@ -1772,6 +1777,11 @@
                         
                         if (fileExists) {
                             console.log('恢复上次打开的文件:', lastFile);
+                            
+                            // 展开包含该文件的文件夹
+                            this.expandFolderForFile(lastFile);
+                            
+                            // 选择文件
                             this.selectFile(lastFile);
                             return true;
                         }
@@ -1780,6 +1790,55 @@
                     console.warn('无法从localStorage加载文件:', error);
                 }
                 return false;
+            }
+
+            // 展开包含指定文件的文件夹
+            expandFolderForFile(filePath) {
+                const pathParts = filePath.split('/');
+                
+                // 如果有文件夹层级
+                if (pathParts.length > 1) {
+                    const folderName = pathParts[0]; // 第一级文件夹
+                    
+                    // 查找对应的文件夹元素
+                    const folderItems = document.querySelectorAll('.folder-item');
+                    folderItems.forEach(folderItem => {
+                        const folderHeader = folderItem.querySelector('.folder-header');
+                        const folderContent = folderItem.querySelector('.folder-content');
+                        const folderIcon = folderItem.querySelector('.folder-icon');
+                        
+                        if (folderHeader && folderContent && folderIcon) {
+                            const folderText = folderHeader.textContent.trim();
+                            
+                            // 如果找到匹配的文件夹
+                            if (folderText === folderName) {
+                                // 展开文件夹
+                                folderContent.classList.add('expanded');
+                                folderIcon.classList.add('expanded');
+                                
+                                // 如果有二级文件夹，也展开
+                                if (pathParts.length > 2) {
+                                    const subFolderName = pathParts[1];
+                                    const subFolders = folderContent.querySelectorAll('.folder-item');
+                                    subFolders.forEach(subFolder => {
+                                        const subFolderHeader = subFolder.querySelector('.folder-header');
+                                        const subFolderContent = subFolder.querySelector('.folder-content');
+                                        const subFolderIcon = subFolder.querySelector('.folder-icon');
+                                        
+                                        if (subFolderHeader && subFolderContent && subFolderIcon) {
+                                            const subFolderText = subFolderHeader.textContent.trim();
+                                            
+                                            if (subFolderText === subFolderName) {
+                                                subFolderContent.classList.add('expanded');
+                                                subFolderIcon.classList.add('expanded');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
             }
         }
 
