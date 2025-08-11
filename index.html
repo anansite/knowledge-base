@@ -504,6 +504,46 @@
             text-shadow: none !important;
         }
 
+        /* 代码块复制按钮样式 */
+        .code-block-wrapper {
+            position: relative;
+            margin: 24px 0;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .code-block-wrapper:hover .copy-button {
+            opacity: 1;
+        }
+
+        .copy-button:hover {
+            background: rgba(102, 126, 234, 1);
+            transform: translateY(-1px);
+        }
+
+        .copy-button.copied {
+            background: #28a745;
+        }
+
+        .copy-button.copied::after {
+            content: '✓ 已复制';
+        }
+
         .markdown-content code {
             background: linear-gradient(135deg, #f6f8fa 0%, #e9ecef 100%);
             border: 1px solid #e1e4e8;
@@ -1102,6 +1142,11 @@
                 this.buildFolderStructure();
                 this.renderFileTree();
                 this.bindEvents();
+                
+                // 尝试恢复上次打开的文件
+                setTimeout(() => {
+                    this.loadLastFile();
+                }, 100);
             }
 
             async loadFileList() {
@@ -1398,6 +1443,9 @@
                 // 显示文件详情
                 this.showFileDetails(filePath);
 
+                // 保存到localStorage
+                this.saveCurrentFile(filePath);
+
                 // 加载文件内容
                 this.loadFileContent(filePath);
             }
@@ -1442,6 +1490,9 @@
                     if (window.Prism) {
                         Prism.highlightAllUnder(contentDiv);
                     }
+                    
+                    // 添加代码块复制功能
+                    this.addCopyButtonsToCodeBlocks();
                     
                     // 处理锚点跳转
                     this.setupAnchorLinks();
@@ -1638,6 +1689,97 @@
                     });
                     this.updateStats();
                 }
+            }
+
+            // 添加代码块复制功能
+            addCopyButtonsToCodeBlocks() {
+                const codeBlocks = document.querySelectorAll('.markdown-content pre');
+                
+                codeBlocks.forEach((pre, index) => {
+                    // 检查是否已经有复制按钮
+                    if (pre.parentElement.classList.contains('code-block-wrapper')) {
+                        return;
+                    }
+                    
+                    // 创建包装器
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'code-block-wrapper';
+                    
+                    // 创建复制按钮
+                    const copyButton = document.createElement('button');
+                    copyButton.className = 'copy-button';
+                    copyButton.innerHTML = '<i class="fas fa-copy"></i> 复制';
+                    copyButton.title = '复制代码';
+                    
+                    // 插入包装器
+                    pre.parentNode.insertBefore(wrapper, pre);
+                    wrapper.appendChild(pre);
+                    wrapper.appendChild(copyButton);
+                    
+                    // 添加复制功能
+                    copyButton.addEventListener('click', async () => {
+                        const code = pre.textContent || pre.innerText;
+                        
+                        try {
+                            await navigator.clipboard.writeText(code);
+                            copyButton.classList.add('copied');
+                            copyButton.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                            
+                            setTimeout(() => {
+                                copyButton.classList.remove('copied');
+                                copyButton.innerHTML = '<i class="fas fa-copy"></i> 复制';
+                            }, 2000);
+                        } catch (err) {
+                            // 降级方案
+                            const textArea = document.createElement('textarea');
+                            textArea.value = code;
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textArea);
+                            
+                            copyButton.classList.add('copied');
+                            copyButton.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                            
+                            setTimeout(() => {
+                                copyButton.classList.remove('copied');
+                                copyButton.innerHTML = '<i class="fas fa-copy"></i> 复制';
+                            }, 2000);
+                        }
+                    });
+                });
+            }
+
+            // 保存当前文件到localStorage
+            saveCurrentFile(filePath) {
+                try {
+                    localStorage.setItem('knowledgeBase_lastFile', filePath);
+                    localStorage.setItem('knowledgeBase_lastVisit', new Date().toISOString());
+                } catch (error) {
+                    console.warn('无法保存到localStorage:', error);
+                }
+            }
+
+            // 从localStorage加载上次打开的文件
+            loadLastFile() {
+                try {
+                    const lastFile = localStorage.getItem('knowledgeBase_lastFile');
+                    const lastVisit = localStorage.getItem('knowledgeBase_lastVisit');
+                    
+                    if (lastFile && lastVisit) {
+                        // 检查文件是否仍然存在
+                        const fileExists = this.files.some(file => file.path === lastFile);
+                        
+                        if (fileExists) {
+                            console.log('恢复上次打开的文件:', lastFile);
+                            this.selectFile(lastFile);
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    console.warn('无法从localStorage加载文件:', error);
+                }
+                return false;
             }
         }
 
