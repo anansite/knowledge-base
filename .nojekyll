@@ -1,0 +1,2 @@
+# 这个文件告诉 GitHub Pages 不要使用 Jekyll 处理这个仓库
+# 这样可以避免 Liquid 模板引擎解析 Markdown 文件中的代码块 

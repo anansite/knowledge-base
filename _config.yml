@@ -1,0 +1,27 @@
+# GitHub Pages Jekyll 配置
+# 禁用 Liquid 处理以避免解析 Markdown 中的代码块
+
+# 禁用 Liquid 处理
+liquid:
+  error_mode: warn
+
+# 禁用默认的 Jekyll 处理
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  smart_quotes: lsquo,rsquo,ldquo,rdquo
+  enable_coderay: false
+
+# 禁用插件
+plugins: []
+
+# 排除文件
+exclude:
+  - README.md
+  - .gitignore
+  - .nojekyll 
