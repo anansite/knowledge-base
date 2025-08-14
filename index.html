@@ -492,42 +492,134 @@
             line-height: 1.7;
         }
 
-        /* 确保所有代码元素都没有下划线和阴影 */
+        /* 强制覆盖所有代码相关样式 */
         .markdown-content code,
         .markdown-content pre code,
         .markdown-content .token,
         .markdown-content .prism-code,
-        .markdown-content pre {
+        .markdown-content pre,
+        .markdown-body code,
+        .markdown-body pre code,
+        .markdown-body .token,
+        .markdown-body .prism-code,
+        .markdown-body pre {
             text-decoration: none !important;
             border-bottom: none !important;
             box-shadow: none !important;
             text-shadow: none !important;
         }
 
-        /* 代码块复制按钮样式 - 扁平化设计 */
-        .code-block-wrapper {
-            position: relative;
-            margin: 24px 0;
+        /* 强制设置代码块字体大小 */
+        .markdown-content pre *,
+        .markdown-body pre *,
+        .markdown-content pre,
+        .markdown-body pre {
+            font-size: 13px !important;
+            line-height: 1.45 !important;
         }
 
+        /* 强制设置行内代码字体大小 */
+        .markdown-content code:not(pre code),
+        .markdown-body code:not(pre code) {
+            font-size: 88% !important;
+        }
+
+        /* 代码语法高亮优化 */
+        .markdown-content .token.comment,
+        .markdown-content .token.prolog,
+        .markdown-content .token.doctype,
+        .markdown-content .token.cdata {
+            color: #6a737d;
+            font-style: italic;
+        }
+
+        .markdown-content .token.punctuation {
+            color: #24292e;
+        }
+
+        .markdown-content .token.property,
+        .markdown-content .token.tag,
+        .markdown-content .token.boolean,
+        .markdown-content .token.number,
+        .markdown-content .token.constant,
+        .markdown-content .token.symbol {
+            color: #005cc5;
+        }
+
+        .markdown-content .token.selector,
+        .markdown-content .token.attr-name,
+        .markdown-content .token.string,
+        .markdown-content .token.char,
+        .markdown-content .token.builtin {
+            color: #032f62;
+        }
+
+        .markdown-content .token.operator,
+        .markdown-content .token.entity,
+        .markdown-content .token.url,
+        .markdown-content .language-css .token.string,
+        .markdown-content .style .token.string {
+            color: #d73a49;
+        }
+
+        .markdown-content .token.atrule,
+        .markdown-content .token.attr-value,
+        .markdown-content .token.keyword {
+            color: #d73a49;
+        }
+
+        .markdown-content .token.function,
+        .markdown-content .token.class-name {
+            color: #6f42c1;
+        }
+
+        .markdown-content .token.regex,
+        .markdown-content .token.important,
+        .markdown-content .token.variable {
+            color: #e36209;
+        }
+
+        .markdown-content .token.important,
+        .markdown-content .token.bold {
+            font-weight: bold;
+        }
+
+        .markdown-content .token.italic {
+            font-style: italic;
+        }
+
+        .markdown-content .token.entity {
+            cursor: help;
+        }
+
+        /* 代码块包装器样式 */
+        .code-block-wrapper {
+            position: relative;
+            margin: 20px 0;
+            border-radius: 6px;
+            overflow: visible;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 复制按钮样式 */
         .copy-button {
             position: absolute !important;
-            top: 4px !important;
-            right: 4px !important;
-            //background: rgba(255, 255, 255, 0.9) !important;
+            top: 8px !important;
+            right: 8px !important;
+            background: rgba(255, 255, 255, 0.95) !important;
             color: #586069 !important;
-            border: none !important;
-            border-radius: 1px !important;
-            padding: 1px !important;
-            font-size: 5px !important;
+            border: 1px solid #e1e4e8 !important;
+            border-radius: 3px !important;
+            padding: 2px !important;
+            font-size: 9px !important;
             cursor: pointer !important;
             opacity: 0 !important;
-            transition: opacity 0.2s ease !important;
+            transition: all 0.2s ease !important;
             z-index: 10 !important;
-            backdrop-filter: blur(4px) !important;
-            //box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
-            width: 26px !important;
-            height: 26px !important;
+            backdrop-filter: blur(8px) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+            width: 20px !important;
+            height: 20px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -538,73 +630,86 @@
         }
 
         .copy-button:hover {
-            //background: rgba(255, 255, 255, 1) !important;
+            background: rgba(255, 255, 255, 1) !important;
             color: #24292e !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
         }
 
         .copy-button.copied {
-            //background: #28a745 !important;
+            background: #28a745 !important;
             color: white !important;
+            border-color: #28a745 !important;
         }
 
         .copy-button i {
-            font-size: 16px !important;
+            font-size: 9px !important;
             margin: 0 !important;
         }
 
-        .markdown-content code {
-            background: linear-gradient(135deg, #f6f8fa 0%, #e9ecef 100%);
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            font-size: 85%;
-            margin: 0 3px;
-            padding: 3px 6px;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Courier New', monospace;
-            color: #e36209;
-            font-weight: 500;
+        /* 行内代码样式 */
+        .markdown-content code,
+        .markdown-body code {
+            background: #f6f8fa !important;
+            border: 1px solid #e1e4e8 !important;
+            border-radius: 3px !important;
+            font-size: 88% !important;
+            margin: 0 1px !important;
+            padding: 1px 3px !important;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Courier New', monospace !important;
+            color: #e36209 !important;
+            font-weight: 500 !important;
             box-shadow: none !important;
             text-decoration: none !important;
             border-bottom: none !important;
         }
 
-        .markdown-content pre {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 12px;
-            font-size: 12px;
-            line-height: 1.5;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 20px 20px 20px 20px;
-            margin: 24px 0;
-            border: 1px solid #e1e4e8;
-            box-shadow: none !important;
-            position: relative;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        /* 代码块基础样式 */
+        .markdown-content pre,
+        .markdown-body pre {
+            background: #f6f8fa !important;
+            border: 1px solid #e1e4e8 !important;
+            border-radius: 6px !important;
+            font-size: 13px !important;
+            line-height: 1.45 !important;
+            overflow-x: auto !important;
+            padding: 16px 20px !important;
+            margin: 20px 0 !important;
+            position: relative !important;
+            white-space: pre-wrap !important;
+            word-wrap: break-word !important;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Courier New', monospace !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
         }
 
 
 
-        .markdown-content pre::before {
+        /* 代码块顶部装饰条 */
+        .markdown-content pre::before,
+        .markdown-body pre::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px 12px 0 0;
+            border-radius: 6px 6px 0 0;
         }
 
-        .markdown-content pre code {
-            background-color: transparent;
-            padding: 0;
-            color: #24292e;
-            border: none;
-            margin: 0;
-            font-size: 12px;
+        /* 代码块内的代码样式 */
+        .markdown-content pre code,
+        .markdown-body pre code {
+            background-color: transparent !important;
+            padding: 0 !important;
+            color: #24292e !important;
+            border: none !important;
+            margin: 0 !important;
+            font-size: 13px !important;
             text-decoration: none !important;
             border-bottom: none !important;
+            font-family: inherit !important;
+            font-weight: normal !important;
         }
 
         .markdown-content blockquote {
